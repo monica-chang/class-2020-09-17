@@ -12,7 +12,7 @@ Load **tidyverse**, **readxl** and **janitor** into your setup chunk. You may ne
 library(tidyverse)
 library(readxl)
 library(janitor)
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
 ### Scene 1
@@ -21,14 +21,32 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Once you have finished cleaning your data, figure out the course with the highest enrollment. And figure out how many students are enrolled in Gov 50. If you get a number much lower than 151, you have done something wrong . . .
 
+```{r scene1}
+raw_data <- read_excel("raw_data/class_enrollment_summary_by_term_9-16-2020.xlsx") 
 
+en_fall_2020 <- raw_data[c(1:5, 7, 14)] %>%
+  clean_names() %>%
+  filter(u_grad >= 10) %>%
+  arrange(desc(total))
+
+gov_50_enrollment <- en_fall_2020 %>%
+  filter(course_title = "Data") %>%
+  select(enrollment)
+``` 
 
 ### Scene 2
 
 **Prompt:** Create a bar plot of the 10 biggest courses. Order the plot so that courses appear in descending order. You will want to use coord_flip() to make your plot easy to read.
 
+```{r scene2}
 
+en_fall_2020 <- en_fall_2020 %>%
+  slice(10) %>%
+  ggplot(aes(x = course_title, y = total)) + 
+    geom_col() +
+    coord_flip()
 
+``` 
 
 ### Scene 3
 
